@@ -57,3 +57,8 @@ def ad_check_one_day(date=''):
         section += 1
 
     post_info.save()
+
+
+if __name__ == '__main__':
+    ad_check_one_day('20230810')
+    print(1)

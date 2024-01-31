@@ -1,66 +1,52 @@
+import requests
 from datetime import datetime
-from tqdm import tqdm
-from utils import logger, KEY
+from bs4 import BeautifulSoup
 from SaveResult import PostInfo
-
-BASE_URL = 'http://paper.people.com.cn/rmrb/html/{}-{:0>2d}/{:0>2d}/nbs.D110000renmrb_01.htm'
-SWIPER_XPATH = '/html/body/div[2]/div[2]/div[2]/div/*'
-NEWS_XPATH = '/html/body/div[2]/div[2]/div[3]/ul/*'
+from utils import logger, KEY
 
 
-def pd_get_url(date=''):
+def pd_get_url(date, section, i):
     if len(date) == 0:
         date = datetime.now()
     else:
         date = datetime.strptime(date, '%Y%m%d')
-    return BASE_URL.format(date.year, date.month, date.day)
+    date_str1 = datetime.strftime(date, '%Y-%m/%d')
+    date_str2 = datetime.strftime(date, '%Y%m%d')
+    return "http://paper.people.com.cn/rmrb/html/{}/nw.D110000renmrb_{}_{}-{:02d}.htm".format(date_str1, date_str2, i,
+                                                                                          section)
 
 
-def pd_back_to_content(driver):
-    driver.click('/html/body/div[2]/div[2]/div[3]/div[1]/span/a')
-
-
-def pd_check_news(driver, post_info, section_name):
-    news_list = driver.find_elements(NEWS_XPATH)
-    for j, news in enumerate(news_list):
-        driver.click(f'/html/body/div[2]/div[2]/div[3]/ul/li[{j + 1}]/a')
-        paragraphs = driver.find_elements('//*[@id="ozoom"]/*')
-        for para in paragraphs:
-            if KEY in para.text:
-                post_info.title.append(driver.driver.title)
-                post_info.url.append(driver.driver.current_url)
-                post_info.section.append(section_name)
-                logger.info("find it!" + driver.driver.current_url)
-                print("find it!" + driver.driver.current_url)
-                break
-        pd_back_to_content(driver)
-
-
-# 查询一页，ex：01 要闻
-def pd_check_swiper(driver, post_info):
-    section = driver.find_element('/html/body/div[2]/div[1]/div[2]/p[1]')
-
-    pd_check_news(driver, post_info, section.text)
-
-
-def pd_check_one_day(driver, date=''):
+def pd_check_one_day(date=''):
     post_info = PostInfo('pd', date)
     if post_info.is_recorded():
         print(f"People daily already checked for {date if len(date) > 0 else 'today'}!")
         return
 
-    base_url = pd_get_url(date)
-    driver.get(base_url)
-    section_num = len(driver.find_elements(SWIPER_XPATH))
+    section = 1
+    while True:
+        i = 0
+        while True:
+            i += 1
+            url = pd_get_url(date, section, i)
+            resp = requests.get(url)
+            if resp.status_code == 404:
+                break
+            html = resp.content.decode('utf-8')
 
-    for i in tqdm(range(1, section_num)):
-        pd_check_swiper(driver, post_info)
-        # 去到下一页
-        driver.click('/html/body/div[2]/div[2]/div[2]/div/div[{}]/a'.format(i + 1))
-    else:
-        pd_check_swiper(driver, post_info)
+            soup = BeautifulSoup(html, 'html.parser')
+            article = soup.find_all('div', {'id': 'articleContent'})
+            if KEY in article[0].text:
+                post_info.title.append(soup.find('title').contents[0])
+                post_info.url.append(url)
+                post_info.section.append(soup.find('p', {'class': 'left ban'}).contents[0])
+                logger.info("find it!" + url)
+
+        if i == 1:
+            # 防跨版导致中断
+            url = pd_get_url(date, section + 1, i)
+            resp = requests.get(url)
+            if resp.status_code == 404:
+                break
+        section += 1
+
     post_info.save()
-
-
-if __name__ == '__main__':
-    pass

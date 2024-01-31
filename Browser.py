@@ -11,6 +11,7 @@ class Driver:
 	chrome_options = webdriver.ChromeOptions()
 	prefs = {'profile.managed_default_content_settings.images': 2, 'permissions.default.stylesheet': 2}
 	chrome_options.add_experimental_option('prefs', prefs)
+	chrome_options.add_argument("--headless")
 	
 	def __init__(self):
 		self.driver = webdriver.Chrome(options=self.chrome_options)
