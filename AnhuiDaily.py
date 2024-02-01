@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from SaveResult import PostInfo
-from utils import logger, KEY
+from utils import logger, KEY, trace_debug
 
 
 def ad_get_url(date, section):
@@ -19,6 +19,7 @@ def ad_get_article_url(href):
     return 'https://szb.ahnews.com.cn/ahrb' + href
 
 
+@trace_debug
 def ad_check_one_day(date=''):
     post_info = PostInfo('ad', date)
     if post_info.is_recorded():

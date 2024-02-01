@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from SaveResult import PostInfo
-from utils import logger, KEY
+from utils import logger, KEY, trace_debug
 
 
 def pd_get_url(date, section, i):
@@ -16,6 +16,7 @@ def pd_get_url(date, section, i):
                                                                                           section)
 
 
+@trace_debug
 def pd_check_one_day(date=''):
     post_info = PostInfo('pd', date)
     if post_info.is_recorded():
