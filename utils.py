@@ -53,6 +53,7 @@ result_path = config.get_content('result_path', 'path')
 if not path.exists(result_path):
     os.mkdir(result_path)
 
+email_conf = config.get_contents('email')
 
 def trace_debug(func):
     @wraps(func)

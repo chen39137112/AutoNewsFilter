@@ -1,7 +1,9 @@
 import os
 from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
 
-from utils import logger, result_path
+from utils import logger, result_path, email_conf
 
 
 class PostInfo:
@@ -28,7 +30,8 @@ class PostInfo:
                     return True
         except FileNotFoundError:
             # windows下无法使用该方法
-            # os.mknod(self.path)
+            if os.name == 'posix':
+                os.mknod(self.path)
             logger.info('first time to check, create file!')
 
         return False
@@ -68,11 +71,38 @@ class PostInfo:
         self.write_tail(file_handle)
         file_handle.close()
 
+        self.send_email()
 
-if __name__ == '__main__':
-    result = PostInfo('ad')
-    result.title.append('csh')
-    result.url.append('123')
-    result.section = '01 要闻'
+    def send_email(self):
+        if email_conf['enable'] == 0:
+            return
 
-    result.save()
+        # 没有结果不发送
+        if not self.title:
+            return
+
+        # 设置发件人、收件人、主题和正文
+        smtp_server = email_conf['smtp_server']
+        port = email_conf['port']  # SMTP服务器端口，根据实际情况修改
+        sender_email = email_conf['username']
+        password = email_conf['password']  # SMTP服务器密码，根据实际情况修改
+        receiver_email = email_conf['receiver']
+
+        # 创建MIMEText对象，设置邮件格式
+        with open(self.path, 'r', encoding='utf-8') as f:
+            msg = MIMEText(''.join(f.readlines()))
+
+        date_str = datetime.strftime(self.date, '%Y-%m-%d')
+        msg['Subject'] = "{}_{}".format(date_str, '安徽日报' if self.paper == 'ad' else '人民日报')
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+
+        try:
+            # 连接到SMTP服务器并发送邮件
+            with smtplib.SMTP(smtp_server, port) as server:
+                server.starttls()  # 启用TLS加密传输
+                server.login(sender_email, password)  # 登录SMTP服务器
+                server.sendmail(sender_email, receiver_email, msg.as_string())
+            print('Email sent successfully!')
+        except Exception as e:
+            print('Error occurred:', e)
