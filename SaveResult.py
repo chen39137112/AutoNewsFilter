@@ -51,7 +51,7 @@ class PostInfo:
         file_handle.write('地址：{}\n'.format(self.url[i]))
 
     def write_tail(self, file_handle):
-        file_handle.write('=' * 10 + self.end_mark + '=' * 10)
+        file_handle.write('=' * 12 + self.end_mark + '=' * 13)
 
     def save(self):
         if self.is_recorded():
@@ -93,7 +93,13 @@ class PostInfo:
             msg = MIMEText(''.join(f.readlines()))
 
         date_str = datetime.strftime(self.date, '%Y-%m-%d')
-        msg['Subject'] = "{}_{}".format(date_str, '安徽日报' if self.paper == 'ad' else '人民日报')
+        paper_name = '人民日报'
+        if self.paper == 'ad':
+            paper_name = '安徽日报'
+        elif self.paper == 'gm':
+            paper_name = '光明日报'
+
+        msg['Subject'] = "{}_{}".format(date_str, paper_name)
         msg['From'] = sender_email
         msg['To'] = receiver_email
 
