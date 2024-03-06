@@ -55,10 +55,11 @@ if __name__ == '__main__':
 		while True:
 			today = datetime.today() + timedelta(hours=12)
 
-			if today.hour == 8:
+			if today.hour == 7:
 				pd_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				ad_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				gm_check_one_day(datetime.strftime(today, '%Y%m%d'))
-			sleep(30 * 60)
+				sleep(23 * 60 * 60)
+			sleep(5 * 60)
 	else:
 		print('unknown system name!')
