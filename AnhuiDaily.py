@@ -1,8 +1,7 @@
-import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from SaveResult import PostInfo
-from utils import logger, KEY, trace_debug
+from utils import logger, KEY, trace_debug, url_get
 
 
 def ad_get_url(date, section):
@@ -29,12 +28,12 @@ def ad_check_one_day(date=''):
     section = 1
     while True:
         url = ad_get_url(date, section)
-        resp = requests.get(url)
+        resp = url_get(url)
         if resp.status_code == 404:
             # 防跨版导致中断
             section += 1
             url = ad_get_url(date, section)
-            resp = requests.get(url)
+            resp = url_get(url)
             if resp.status_code == 404:
                 break
 
@@ -44,7 +43,7 @@ def ad_check_one_day(date=''):
 
         for href in news_list:
             article_url = ad_get_article_url(href)
-            article = requests.get(article_url)
+            article = url_get(article_url)
             html = article.content.decode('utf-8')
             soup = BeautifulSoup(html, 'html.parser')
             article = soup.find_all('body')

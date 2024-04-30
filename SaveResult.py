@@ -98,6 +98,8 @@ class PostInfo:
             paper_name = '安徽日报'
         elif self.paper == 'gm':
             paper_name = '光明日报'
+        elif self.paper == 'xh':
+            paper_name = '新华网'
 
         msg['Subject'] = "{}_{}".format(date_str, paper_name)
         msg['From'] = sender_email

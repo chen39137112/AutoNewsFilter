@@ -1,8 +1,7 @@
-import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from SaveResult import PostInfo
-from utils import logger, KEY, trace_debug
+from utils import logger, KEY, trace_debug, url_get
 
 
 def gm_get_url(date, section, i):
@@ -28,7 +27,7 @@ def gm_check_one_day(date=''):
         while True:
             i += 1
             url = gm_get_url(date, section, i)
-            resp = requests.get(url)
+            resp = url_get(url)
             if resp.status_code == 404:
                 break
             html = resp.content.decode('utf-8')
@@ -46,7 +45,7 @@ def gm_check_one_day(date=''):
         if i == 1:
             # 防跨版导致中断
             url = gm_get_url(date, section + 1, i)
-            resp = requests.get(url)
+            resp = url_get(url)
             if resp.status_code == 404:
                 break
         section += 1

@@ -8,6 +8,7 @@ from time import sleep
 from PeopleDaily import pd_check_one_day
 from AnhuiDaily import ad_check_one_day
 from GuangmingDaily import gm_check_one_day
+from XinhuaNet import xh_check_one_day
 
 
 def print_interface():
@@ -59,6 +60,7 @@ if __name__ == '__main__':
 				pd_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				ad_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				gm_check_one_day(datetime.strftime(today, '%Y%m%d'))
+				xh_check_one_day()
 				sleep(23 * 60 * 60)
 			sleep(5 * 60)
 	else:

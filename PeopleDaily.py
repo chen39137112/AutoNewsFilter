@@ -1,8 +1,7 @@
-import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from SaveResult import PostInfo
-from utils import logger, KEY, trace_debug
+from utils import logger, KEY, trace_debug, url_get
 
 
 def pd_get_url(date, section, i):
@@ -13,7 +12,7 @@ def pd_get_url(date, section, i):
     date_str1 = datetime.strftime(date, '%Y-%m/%d')
     date_str2 = datetime.strftime(date, '%Y%m%d')
     return "http://paper.people.com.cn/rmrb/html/{}/nw.D110000renmrb_{}_{}-{:02d}.htm".format(date_str1, date_str2, i,
-                                                                                          section)
+                                                                                              section)
 
 
 @trace_debug
@@ -29,7 +28,7 @@ def pd_check_one_day(date=''):
         while True:
             i += 1
             url = pd_get_url(date, section, i)
-            resp = requests.get(url)
+            resp = url_get(url)
             if resp.status_code == 404:
                 break
             html = resp.content.decode('utf-8')
@@ -45,7 +44,7 @@ def pd_check_one_day(date=''):
         if i == 1:
             # 防跨版导致中断
             url = pd_get_url(date, section + 1, i)
-            resp = requests.get(url)
+            resp = url_get(url)
             if resp.status_code == 404:
                 break
         section += 1

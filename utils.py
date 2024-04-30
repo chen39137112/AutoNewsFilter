@@ -9,6 +9,7 @@ import traceback
 from functools import wraps
 import threading
 from random import randint
+import requests
 
 
 class Config(object):
@@ -16,7 +17,7 @@ class Config(object):
         file_path = path.join(path.dirname(__file__), config_filename)
         # RawConfigParser遇到特殊字符不会转义
         self.cf = configparser.RawConfigParser()
-        self.cf.read(file_path,encoding='utf-8')
+        self.cf.read(file_path, encoding='utf-8')
 
     def get_sections(self):
         return self.cf.sections()
@@ -54,6 +55,7 @@ if not path.exists(result_path):
     os.mkdir(result_path)
 
 email_conf = config.get_contents('email')
+
 
 def trace_debug(func):
     @wraps(func)
@@ -97,3 +99,8 @@ def speed_limit(func):
         return result
 
     return decorated_func
+
+
+def url_get(url):
+    return requests.get(url=url, headers={
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0"})
