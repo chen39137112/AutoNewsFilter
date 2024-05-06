@@ -1,4 +1,3 @@
-from datetime import datetime
 from bs4 import BeautifulSoup
 from SaveResult import PostInfo
 from utils import logger, KEY, trace_debug, url_get
@@ -25,6 +24,8 @@ def xh_check_one_day(date=''):
     get_hrefs(hrefs, "http://ah.news.cn/news/anhui.htm")
 
     for href in hrefs:
+        if href.startswith("../"):
+            href = "http://ah.news.cn" + href[2:]
         resp = url_get(href)
         html = resp.content.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
@@ -45,3 +46,6 @@ def xh_check_one_day(date=''):
             logger.info("find it!" + href)
 
     post_info.save()
+
+if __name__ == '__main__':
+    xh_check_one_day()
