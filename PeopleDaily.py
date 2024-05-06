@@ -35,6 +35,9 @@ def pd_check_one_day(date=''):
 
             soup = BeautifulSoup(html, 'html.parser')
             article = soup.find_all('div', {'id': 'articleContent'})
+            if len(article) == 0:
+                logger.error("empty article : " + url)
+                continue
             if KEY in article[0].text:
                 post_info.title.append(soup.find('title').contents[0])
                 post_info.url.append(url)
@@ -50,3 +53,6 @@ def pd_check_one_day(date=''):
         section += 1
 
     post_info.save()
+
+if __name__ == '__main__':
+    pd_check_one_day("20240401")
