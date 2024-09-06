@@ -16,6 +16,7 @@ def gm_get_url(date, section, i):
 
 @trace_debug
 def gm_check_one_day(date=''):
+    logger.info('start to check guangming daily...')
     post_info = PostInfo('gm', date)
     if post_info.is_recorded():
         print(f"Guangming daily already checked for {date if len(date) > 0 else 'today'}!")

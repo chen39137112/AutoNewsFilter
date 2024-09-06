@@ -17,6 +17,7 @@ def get_hrefs(hrefs, url):
 
 @trace_debug
 def xh_check_one_day(date=''):
+    logger.info("check xinhua news!")
     post_info = PostInfo('xh', date)
     hrefs = []
     get_hrefs(hrefs, "http://www.news.cn/")

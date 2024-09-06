@@ -20,6 +20,7 @@ def ad_get_article_url(href):
 
 @trace_debug
 def ad_check_one_day(date=''):
+    logger.info('check Anhui daily!')
     post_info = PostInfo('ad', date)
     if post_info.is_recorded():
         print(f"Anhui daily already checked for {date if len(date) > 0 else 'today'}!")

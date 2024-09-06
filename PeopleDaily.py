@@ -17,6 +17,7 @@ def pd_get_url(date, section, i):
 
 @trace_debug
 def pd_check_one_day(date=''):
+    logger.info("check pd!")
     post_info = PostInfo('pd', date)
     if post_info.is_recorded():
         print(f"People daily already checked for {date if len(date) > 0 else 'today'}!")

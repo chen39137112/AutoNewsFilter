@@ -60,7 +60,7 @@ if __name__ == '__main__':
 				pd_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				ad_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				gm_check_one_day(datetime.strftime(today, '%Y%m%d'))
-				xh_check_one_day()
+				xh_check_one_day(datetime.strftime(today, '%Y%m%d'))
 				sleep(23 * 60 * 60)
 			sleep(5 * 60)
 	else:
