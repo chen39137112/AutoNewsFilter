@@ -27,7 +27,7 @@ def ad_check_one_day(date=''):
         return
 
     section = 1
-    while True:
+    for _ in range(100):
         url = ad_get_url(date, section)
         resp = url_get(url)
         if resp.status_code == 404:
@@ -58,3 +58,7 @@ def ad_check_one_day(date=''):
         section += 1
 
     post_info.save()
+
+
+if __name__ == '__main__':
+    ad_check_one_day('20240728')

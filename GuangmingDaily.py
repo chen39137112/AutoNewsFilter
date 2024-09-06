@@ -23,9 +23,9 @@ def gm_check_one_day(date=''):
         return
 
     section = 1
-    while True:
+    for _ in range(100):
         i = 0
-        while True:
+        for __ in range(100):
             i += 1
             url = gm_get_url(date, section, i)
             resp = url_get(url)
@@ -55,5 +55,4 @@ def gm_check_one_day(date=''):
 
 
 if __name__ == '__main__':
-    gm_check_one_day('20240305')
-    pass
+    gm_check_one_day('20240728')

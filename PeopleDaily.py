@@ -24,9 +24,9 @@ def pd_check_one_day(date=''):
         return
 
     section = 1
-    while True:
+    for _ in range(100):
         i = 0
-        while True:
+        for __ in range(100):
             i += 1
             url = pd_get_url(date, section, i)
             resp = url_get(url)
