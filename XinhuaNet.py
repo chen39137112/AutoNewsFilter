@@ -28,6 +28,10 @@ def xh_check_one_day(date=''):
         if href.startswith("../"):
             href = "http://ah.news.cn" + href[2:]
         resp = url_get(href)
+        if resp is None:
+            logger.warning(href + ' time out!')
+            continue
+
         html = resp.content.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
         if "sikepro" in href:

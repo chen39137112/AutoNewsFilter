@@ -105,9 +105,13 @@ def speed_limit(func):
 def url_get(url):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0"}
-    try:
-        return requests.get(url=url, headers=headers, timeout=10)
-    except requests.exceptions.ConnectionError:
-        logger.warning("connect reset! sleep 5s :" + url)
-        time.sleep(5)
-    return requests.get(url=url, headers=headers, timeout=10)
+    for _ in range(2):
+        try:
+            return requests.get(url=url, headers=headers, timeout=10)
+        except requests.exceptions.ConnectionError:
+            logger.warning("connect reset! sleep 5s :" + url)
+            time.sleep(5)
+        except requests.exceptions.ReadTimeout:
+            logger.warning("timeout ! sleep 5s :" + url)
+            time.sleep(5)
+    return None
