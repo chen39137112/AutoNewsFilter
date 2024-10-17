@@ -30,6 +30,10 @@ def ad_check_one_day(date=''):
     for _ in range(100):
         url = ad_get_url(date, section)
         resp = url_get(url)
+
+        if resp is None:
+            section += 1
+            continue
         if resp.status_code == 404:
             # 防跨版导致中断
             section += 1
